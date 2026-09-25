@@ -8,7 +8,9 @@
     - [Using Singularity](#singularity)
 - [Configuration](#configuration)
 - [Usage](#usage)
+- [Workflow](#workflow)
 - [Outputs](#outputs)
+- [Limitations](#limitations)
 
 
 #### Requirements<a name="requirements"></a>
@@ -73,6 +75,12 @@ bash DEVINATE_main.sh \
    OUTPUT_name
 ```
 
+### Workflow<a name="workflow"></a>
+
+The DEVINATE pipeline consists of several steps, from TE read mapping and variant discovery to insertion site identification and characterization.
+
+![DEVINATE workflow](docs/images/DEVINATE_workflow.png)
+
 ### Outputs<a name="outputs"></a>
 
 Here is an exemple of the structure of the output files obtained after running the pipeline. The `OUTPUT_name` argument used was `EBONT18_ZAM` :
@@ -115,3 +123,8 @@ Here is an exemple of the structure of the output files obtained after running t
 | | |____3p_Truncated_DEL_5964-6591.bam
 ```
 
+### Limitations<a name="limitations"></a>
+
+Only tested on ONT data -> extend to PacBio data.
+
+Upgrade the "empty sites" script (giving the `*.empty_sites.VAF_freq.tsv` file)
