@@ -2,6 +2,16 @@
 
 ## Long-reads TEs insertions finder 
 
+### Installation<a name="Installation"></a>
+
+#### Using Git<a name="git"></a>
+
+Once the requirements fullfilled, just *git* clone
+
+```bash
+git clone https://github.com/paillerv/DEVINATE.git
+```
+
 ### How to use this script?
 
 The main bash script DEVINATE_main.sh will launch sequentially the python sub-scripts.
