@@ -128,3 +128,5 @@ Here is an exemple of the structure of the output files obtained after running t
 Only tested on ONT data -> extend to PacBio data.
 
 Upgrade the "empty sites" script (giving the `*.empty_sites.VAF_freq.tsv` file)
+
+Upgrade DEVINATE to a Nextflow (or Snakemake) version. Also use a singularity container. 
