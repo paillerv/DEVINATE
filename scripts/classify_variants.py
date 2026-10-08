@@ -14,8 +14,10 @@ MIN_COV = 0.50
 MAX_INDEL_RATE = 0.10
 MAX_UNEXPECTED_DEL = 200
 MAX_UNEXPECTED_INS = 200
+TOLERANCE = 300
+MIN_CLIP = 100
 
-# Continuous scoring & ambiguity parameters
+# Continuous scoring & ambiguity parameters for deletions
 WINDOW = 100
 SCORE_THRESH = 0.50
 DELTA_AMBIGUOUS = 0.05
@@ -220,11 +222,11 @@ def classify_and_filter_read(
     softclip_right: int,
     mapq: int,
     identity: float,
-    min_cov: float = 0.50,
-    min_clip: int = 300,
+    min_cov: float = MIN_COV,
+    min_clip: int = MIN_CLIP,
     min_mapq: int = 30,
-    min_id: float = 0.85,
-    tolerance: int = 300
+    min_id: float = MIN_ID,
+    tolerance: int = TOLERANCE
 ) -> tuple[str, str, str]:
 
     """Return (STATUT_DECISION, CATEGORIE_BIOLOGIQUE, RAISON_DROP)"""

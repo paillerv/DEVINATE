@@ -7,7 +7,6 @@ import pysam
 CLUSTER_THRESHOLD = 50
 MIN_VAR_LENGTH    = 150     # DEL or INS
 MIN_AF            = 0.05
-END_MARGIN        = 200
 
 if len(sys.argv) < 3:
     print("Usage: python3 discover_variants_only.py <input.bam> <output_variants.txt>")
@@ -33,7 +32,7 @@ for read in bam_in.fetch():
         continue
         
     # Extract only full spanning reads on the TE (5' to 3')
-    if (read.reference_start <= END_MARGIN) and (read.reference_end >= (te_length - END_MARGIN)):
+    if (read.reference_start == 0) and (read.reference_end == te_length):
         total_full_length_reads += 1
         current_pos = read.reference_start
         

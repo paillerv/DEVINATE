@@ -9,7 +9,7 @@ def parse_args():
     parser.add_argument("bam")
     parser.add_argument("classification")
     parser.add_argument("output")
-    parser.add_argument("--min-flank", type=int, default=200)
+    parser.add_argument("--min-flank", type=int, default=100)
     return parser.parse_args()
 
 # -------------------------
@@ -52,24 +52,45 @@ def extract_flanks(bam_path, classifications, min_flank, output):
         variant = classifications[read_id]
         seq     = read.query_sequence
         cigar   = read.cigartuples
+        
+        ref_len = bam.get_reference_length(read.reference_name)
 
-        # 5' flank
+        # -------------------------
+        # 5' FLANK
+        # -------------------------
         if not variant.startswith("5p_Truncated"):
-            if cigar[0][0] == 4:
+            if cigar[0][0] == 4:  # Soft-clipping au début
                 l = cigar[0][1]
-                if l >= min_flank:
-                    flanks_per_read[read_id].append(
-                        ("flank5", l, seq[:l])
-                    )
+                ref_start = read.reference_start  # Position de début sur la référence
+                
+                # On retire la portion qui empiète à l'intérieur du TE
+                if ref_start < l:
+                    true_flank_len = l - ref_start
+                    if true_flank_len >= min_flank:
+                        seq_flank = seq[ref_start:l]
+                        flanks_per_read[read_id].append(
+                            ("flank5", true_flank_len, seq_flank)
+                        )
 
-        # 3' flank
+        # -------------------------
+        # 3' FLANK
+        # -------------------------
         if not variant.startswith("3p_Truncated"):
-            if cigar[-1][0] == 4:
+            if cigar[-1][0] == 4:  # Soft-clipping à la fin
                 l = cigar[-1][1]
-                if l >= min_flank:
-                    flanks_per_read[read_id].append(
-                        ("flank3", l, seq[-l:])
-                    )
+                ref_end = read.reference_end  # Fin de l'alignement sur la référence
+                
+                # Distance entre la fin de l'alignement et la fin du TE de référence
+                remaining_ref = ref_len - ref_end
+                
+                # On retire la portion qui empiète sur la fin du TE
+                if l > remaining_ref:
+                    true_flank_len = l - remaining_ref
+                    if true_flank_len >= min_flank:
+                        seq_flank = seq[-true_flank_len:]
+                        flanks_per_read[read_id].append(
+                            ("flank3", true_flank_len, seq_flank)
+                        )
 
     bam.close()
 
@@ -84,7 +105,6 @@ def extract_flanks(bam_path, classifications, min_flank, output):
                 continue
                 
             variant = classifications[read_id]
-
             sides = {f[0] for f in flanks}
             
             # Categorization according to the flanks
